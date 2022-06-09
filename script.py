@@ -1,15 +1,16 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn import metrics
 
 import tensorflow as tf
 from tensorflow	import keras
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras import layers
+from tensorflow.keras.optimizers import Adam
 
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import Normalizer
 from sklearn.metrics import r2_score
 from sklearn.compose import ColumnTransformer
@@ -46,3 +47,22 @@ features_test_scaled = ct.transform(features_test)
 '''
 Step 2: Creating the neural network model
 '''
+
+# Create sequential neural network with keras
+model = Sequential()
+
+# Create and add an input layer with a node for every feature
+input_layer = layers.InputLayer(len(features.columns)-1)
+model.add(input_layer)
+
+# Add One hidden layer with relu activation 
+model.add(layers.Dense(64, activation='relu'))
+
+# Add a one-node output layer 
+model.add(layers.Dense(1))
+
+# Create an optimiser that uses the Adam algorithm 
+optimiser = Adam(learning_rate = 0.1)
+
+# Compile the network with the optimiser, a loss metric, and an error metric
+model = model.compile(loss='mse', metrics=['mae'], optimizer=optimiser)
